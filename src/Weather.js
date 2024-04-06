@@ -1,52 +1,76 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Weather.css";
 import "./index.css";
+import axios from "axios";
 
-export default function Weather() {
-  return (
-    <div className="Weather">
-      <form>
-        <div className="row">
-          <div className="col-9">
-            <input
-              type="search"
-              placeholder="Enter a city..."
-              className="form-control"
-              autoFocus="on"
-            />
-          </div>
-          <div className="col-3">
-            <input
-              type="submit"
-              value="Search"
-              className="btn btn-primary w-100"
-            />
-          </div>
-        </div>
-      </form>
-      <h1>New York</h1>
-      <ul>
-        <li>Wednesday 07:00</li>
-        <li>Mostly cloudy</li>
-      </ul>
-      <div className="row mt-3">
-        <div className="col-6">
-          <img
-            src="https://s.yimg.com/os/weather/1.0.1/shadow_icon/60x60/fair_day@2x.png"
-            alt="Cloudy"
-          />
+export default function Weather(props) {
+  let [weatherData, setweatherData] = useState({ ready: false });
 
-          <span className="temperature">6</span>
-          <span className="unit">°c</span>
-        </div>
-        <div className="col-6">
-          <ul>
-            <li>Precipitation: 15%</li>
-            <li>Humidity: 72%</li>
-            <li>Wind: 13Km/h</li>
-          </ul>
+  function handleresponse(response) {
+    console.log(response.data);
+    setweatherData({
+      ready: true,
+      temperature: response.data.main.temp,
+      date: "Wednesday 07:00",
+      wind: response.data.wind.speed,
+      city: response.data.name,
+      description: response.data.weather[0].description,
+      iconUrl:
+        "https://s.yimg.com/os/weather/1.0.1/shadow_icon/60x60/thundershowers_day_night@2x.png",
+      humidity: response.data.main.humidity,
+    });
+  }
+
+  if (weatherData.ready) {
+    return (
+      <div className="Weather">
+        <form>
+          <div className="row">
+            <div className="col-9">
+              <input
+                type="search"
+                placeholder="Enter a city..."
+                className="form-control"
+                autoFocus="on"
+              />
+            </div>
+            <div className="col-3">
+              <input
+                type="submit"
+                value="Search"
+                className="btn btn-primary w-100"
+              />
+            </div>
+          </div>
+        </form>
+        <h1>{weatherData.city}</h1>
+        <ul>
+          <li>{weatherData.date}</li>
+          <li className="text-capitalize">{weatherData.description}</li>
+        </ul>
+        <div className="row mt-3">
+          <div className="col-6">
+            <img src={weatherData.iconUrl} alt={weatherData.description} />
+
+            <span className="temperature">
+              {Math.round(weatherData.temperature)}
+            </span>
+            <span className="unit">°c</span>
+          </div>
+          <div className="col-6">
+            <ul>
+              <li>Humidity: {weatherData.humidity}%</li>
+              <li>Wind: {weatherData.wind}Km/h</li>
+            </ul>
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  } else {
+    let apiKey = "eb9542c65e739e0fb25ade97c749e2aa";
+    let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${props.defaultCity}&appid=${apiKey}&units=metric`;
+    axios.get(apiUrl).then(handleresponse);
+
+    return "Loading...";
+  }
 }
