@@ -10,14 +10,14 @@ export default function Weather(props) {
   let [city, setCity] = useState(props.defaultCity);
 
   function handleresponse(response) {
+    console.log(response.data)
     setweatherData({
       ready: true,
       temperature: response.data.main.temp,
       wind: response.data.wind.speed,
       city: response.data.name,
       description: response.data.weather[0].description,
-      iconUrl:
-        "https://s.yimg.com/os/weather/1.0.1/shadow_icon/60x60/thundershowers_day_night@2x.png",
+      iconUrl: `https://openweathermap.org/img/wn/${response.data.weather[0].icon}@2x.png`,
       humidity: response.data.main.humidity,
       dates: new Date(response.data.dt * 1000),
     });
