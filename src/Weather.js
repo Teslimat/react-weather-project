@@ -10,6 +10,7 @@ export default function Weather(props) {
   let [weatherData, setweatherData] = useState({ ready: false });
   let [city, setCity] = useState(props.defaultCity);
 
+
   function handleresponse(response) {
     console.log(response.data)
     setweatherData({
@@ -24,6 +25,7 @@ export default function Weather(props) {
       dates: new Date(response.data.dt * 1000),
     });
   }
+
 
   function search() {
     let apiKey = "eb9542c65e739e0fb25ade97c749e2aa";
